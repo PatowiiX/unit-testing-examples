@@ -1,2 +1,3 @@
 mx\tecmilenio\testing\UsernamePolicy.class
 mx\tecmilenio\testing\ParkingFeeCalculator.class
+mx\tecmilenio\testing\LegacyParkingReceipt.class

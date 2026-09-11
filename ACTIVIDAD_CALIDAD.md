@@ -39,3 +39,23 @@ Los tres hallazgos que Sonar marcó **ya habían sido identificados en la revisi
 - Da un **nombre de regla estandarizado** (por ejemplo `java:S1125`) y una **categoría** (Maintainability, Consistency issue), lo cual facilita rastrear el problema y buscar más contexto.
 - Explica el "por qué" de forma más técnica y con ejemplos de código "compliant" vs "non-compliant", útil para justificar la corrección ante otros desarrolladores.
 - No sustituye el criterio humano para detectar problemas de **diseño más amplios** (como la mezcla de responsabilidades entre validación/logging/formato, o la duplicación de texto entre las dos ramas del `if/else`), que en este caso sí fueron detectados manualmente pero que una herramienta de análisis estático línea por línea no necesariamente resalta con la misma claridad.
+
+## Correcciones realizadas
+
+Se eligieron **dos** hallazgos para corregir directamente en `LegacyParkingReceipt.java` (no era obligatorio corregir todos):
+
+### Corrección 1 — Comparación de `String` con `==`
+
+- **Qué cambié:** la línea `if (plate == "")` se reemplazó por `if (plate.isEmpty())`.
+- **Qué problema intentaba resolver:** `==` compara si dos referencias apuntan al mismo objeto en memoria, no si el contenido del texto es igual. Esto podía hacer que una placa vacía (`plate = new String("")`, por ejemplo) **no** fuera detectada como vacía y pasara la validación, permitiendo generar un recibo inválido.
+- **¿Sonar dejó de reportarlo?** Sí. La regla de comparación de `String` con referencia (`==`/`!=`) ya no aparece marcada en SonarQube for IDE sobre esa línea después del cambio.
+- **Por qué quedó mejor:** ahora la validación de "placa vacía" funciona de forma confiable sin importar cómo se haya construido el `String` que llega como parámetro. Es una corrección de comportamiento (bug real), no solo de estilo, y usa el método estándar de Java (`isEmpty()`) pensado exactamente para este caso.
+
+### Corrección 2 — Booleanos redundantes (`java:S1125`)
+
+- **Qué cambié:** `boolean free = fee == 0 ? true : false;` se simplificó a `boolean free = fee == 0;`, y `if (free == true)` se simplificó a `if (free)`.
+- **Qué problema intentaba resolver:** ambas expresiones comparaban o construían un valor booleano usando literales `true`/`false` de forma innecesaria, ya que `fee == 0` y `free` ya son expresiones/variables booleanas por sí mismas. Esto no cambia el comportamiento, pero agrega ruido visual y hace que el código parezca más complejo de lo que realmente es.
+- **¿Sonar dejó de reportarlo?** Sí, la regla `java:S1125` ("Boolean literals should not be redundant") ya no aparece marcada en esas líneas tras la simplificación.
+- **Por qué quedó mejor:** el código ahora dice exactamente lo mismo con menos palabras y sin comparaciones redundantes, lo cual facilita leerlo de un vistazo y reduce la posibilidad de que alguien, al modificarlo después, se confunda con la doble negación o comparación innecesaria.
+
+> No se corrigieron en este momento el resto de los hallazgos (uso de `System.out.println` en vez de un logger, duplicación de texto entre las ramas del `if/else`, el literal `"PARKING"` sin nombre) para mantener el alcance de esta actividad enfocado en dos correcciones concretas y verificables; quedan documentados arriba como mejoras pendientes.
