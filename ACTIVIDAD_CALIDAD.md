@@ -18,7 +18,3 @@
 | LegacyParkingReceipt.java | El literal `"PARKING"` está hardcodeado como etiqueta del recibo, similar al problema de números mágicos visto en `ParkingFeeCalculator`. | Maintainability | Baja | Extraer a una constante con nombre, por ejemplo `private static final String RECEIPT_LABEL = "PARKING";`, para que cualquier cambio de formato se haga en un solo lugar. |
 
 > Nota: no todas las observaciones anteriores son errores; varias son oportunidades de mejora de diseño, legibilidad o cobertura de pruebas que no afectan el comportamiento actual del programa.
-
-## Análisis manual de LegacyParkingReceipt.java (antes de usar herramientas automáticas)
-
-Esta clase fue revisada **manualmente, sin consultar Internet ni ejecutar SonarQube/SonarLint todavía**, con el fin de comparar después el criterio humano contra el de una herramienta automática. Las 5 observaciones de la tabla de arriba resumen los hallazgos principales: un defecto real (comparación de `String` con `==`), un problema de diseño (mezcla de responsabilidades y efecto secundario de consola dentro de lógica de negocio), y tres mejoras de legibilidad/mantenibilidad (booleanos redundantes, duplicación de texto y un literal sin nombre).
