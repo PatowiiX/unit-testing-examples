@@ -51,16 +51,15 @@ Se eligieron **dos** hallazgos para corregir directamente en `LegacyParkingRecei
 - **¿Sonar dejó de reportarlo?** Sí. La regla de comparación de `String` con referencia (`==`/`!=`) ya no aparece marcada en SonarQube for IDE sobre esa línea después del cambio.
 - **Por qué quedó mejor:** ahora la validación de "placa vacía" funciona de forma confiable sin importar cómo se haya construido el `String` que llega como parámetro. Es una corrección de comportamiento (bug real), no solo de estilo, y usa el método estándar de Java (`isEmpty()`) pensado exactamente para este caso.
 
-### Corrección 2 — Booleanos redundantes (`java:S1125`)
+### Corrección 2 — Booleanos redundantes 
 
 - **Qué cambié:** `boolean free = fee == 0 ? true : false;` se simplificó a `boolean free = fee == 0;`, y `if (free == true)` se simplificó a `if (free)`.
 - **Qué problema intentaba resolver:** ambas expresiones comparaban o construían un valor booleano usando literales `true`/`false` de forma innecesaria, ya que `fee == 0` y `free` ya son expresiones/variables booleanas por sí mismas. Esto no cambia el comportamiento, pero agrega ruido visual y hace que el código parezca más complejo de lo que realmente es.
 - **¿Sonar dejó de reportarlo?** Sí, la regla `java:S1125` ("Boolean literals should not be redundant") ya no aparece marcada en esas líneas tras la simplificación.
 - **Por qué quedó mejor:** el código ahora dice exactamente lo mismo con menos palabras y sin comparaciones redundantes, lo cual facilita leerlo de un vistazo y reduce la posibilidad de que alguien, al modificarlo después, se confunda con la doble negación o comparación innecesaria.
 
-> No se corrigieron en este momento el resto de los hallazgos (uso de `System.out.println` en vez de un logger, duplicación de texto entre las ramas del `if/else`, el literal `"PARKING"` sin nombre) para mantener el alcance de esta actividad enfocado en dos correcciones concretas y verificables; quedan documentados arriba como mejoras pendientes.
 
-## Reflexión final
+## PREGUNTAS RELACIONADAS
 
 **P1. ¿Por qué probar muchos valores de la misma región no ayuda?**
 
