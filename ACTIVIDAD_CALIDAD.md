@@ -59,3 +59,40 @@ Se eligieron **dos** hallazgos para corregir directamente en `LegacyParkingRecei
 - **Por qué quedó mejor:** el código ahora dice exactamente lo mismo con menos palabras y sin comparaciones redundantes, lo cual facilita leerlo de un vistazo y reduce la posibilidad de que alguien, al modificarlo después, se confunda con la doble negación o comparación innecesaria.
 
 > No se corrigieron en este momento el resto de los hallazgos (uso de `System.out.println` en vez de un logger, duplicación de texto entre las ramas del `if/else`, el literal `"PARKING"` sin nombre) para mantener el alcance de esta actividad enfocado en dos correcciones concretas y verificables; quedan documentados arriba como mejoras pendientes.
+
+## Reflexión final
+
+**P1. ¿Por qué probar muchos valores de la misma región no ayuda?**
+
+Porque si el código usa la misma fórmula para todos esos datos, probar varios dará el mismo resultado. Si funciona con uno, casi seguro funciona con los demás. Repetir solo hace las pruebas más lentas sin encontrar errores nuevos.
+
+**P2. Dos fronteras importantes y por qué probarlas**
+
+- **15 vs 16 minutos (Gratis a $20):** Es donde empieza el cobro. Un simple error de `<` por `<=` cobraría antes de tiempo o dejaría pasar a alguien gratis.
+- **300 vs 301 minutos (Llegar al límite de $80):** En 300 minutos el cobro llega solo a $80 por la tarifa por hora, pero en 301 minutos actúa el tope máximo. Probar ahí asegura que el tope realmente funcione cuando debe.
+
+En este sentido, valen la pena porque donde cambia la regla es donde la gente suele equivocarse al programar.
+
+**P3. ¿Que todas estén en verde significa que el programa está bien?**
+
+No. Solo significa que el programa pasó los casos que se revisaron. Todavía pueden existir errores en casos no probados, o se pudo haber escrito mal la prueba desde el principio.
+
+**P4. ¿Qué problema encontró Sonar que tú no habías identificado durante el desarrollo?**
+
+Sonar señaló una condición duplicada/redundante en la lógica del cálculo del tope de $80 (la misma comparación de minutos aparecía repetida en dos puntos distintos del código), algo que no había notado al revisarlo manualmente porque el programa funcionaba de todas formas.
+
+**P5. ¿Qué observación hiciste tú que Sonar no reportó?**
+
+Noté que algunos nombres de variables eran poco descriptivos (por ejemplo, usar `m` en vez de `minutos`), lo que dificultaba entender la lógica de negocio a simple vista. Sonar no marca esto porque no evalúa qué tan claro o descriptivo es un nombre, solo patrones de código.
+
+**P6. ¿Consideras que todos los hallazgos de Sonar tienen la misma importancia? Explica un ejemplo.**
+
+No. Sonar clasifica los hallazgos por severidad (bug, vulnerabilidad, code smell). Por ejemplo, un bug que puede provocar un cobro incorrecto es crítico y debe corregirse de inmediato, mientras que un code smell como una variable con nombre muy corto es solo una sugerencia de estilo que no afecta el funcionamiento del programa.
+
+**P7. ¿Puede Sonar determinar por sí solo si "$20 de 16 a 60 minutos" es la regla correcta del negocio? ¿Por qué?**
+
+No. Sonar solo detecta patrones de código (duplicación, complejidad, errores comunes de programación), pero no conoce las reglas reales del negocio. Solo una persona que conozca el reglamento de cobro puede confirmar si esa regla específica es la correcta.
+
+**P8. Explica con tus palabras por qué el análisis estático NO sustituye las pruebas unitarias ni el code review.**
+
+Las pruebas unitarias y el code review no pueden ser sustituidos porque requieren criterio humano: una persona entiende el contexto del negocio y puede juzgar si el comportamiento del programa es el correcto, algo que una herramienta automática no puede hacer. El análisis estático solo detecta patrones de código previamente definidos, pero no tiene la capacidad de razonar como un supervisor humano ni de validar que la lógica cumpla con lo que realmente se espera del sistema.
